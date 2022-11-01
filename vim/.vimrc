@@ -1,98 +1,60 @@
-" Only do this part when compiled with support for autocommands.
-if has("autocmd")
+set nocompatible
+source ~/projects/profile/vim/skwp.vim
 
-  " Enable file type detection.
-  " Use the default filetype settings, so that mail gets 'tw' set to 72,
-  " 'cindent' is on in C files, etc.
-  " Also load indent files, to automatically do language-dependent indenting.
-  filetype plugin indent on
+"Make * available in visual mode
+vnoremap <silent> * y:let @/=@"<cr>:set hlsearch<cr>
 
-  " Put these in an autocmd group, so that we can delete them easily.
-  augroup vimrcEx
-  au!
+"Make dot available in visual mode
+vnoremap <silent> . :norm .<cr>
 
-  " For all text files set 'textwidth' to 78 characters.
-  autocmd FileType text setlocal textwidth=78
+" Change regex search to use "magic", similar to how modern day regexes
+" behave
+nnoremap / /\v
+vnoremap / /\v
 
-  " When editing a file, always jump to the last known cursor position.
-  " Don't do it when the position is invalid or when inside an event handler
-  " (happens when dropping a file on gvim).
-  autocmd BufReadPost *
-    \ if line("'\"") > 0 && line("'\"") <= line("$") |
-    \   exe "normal g`\"" |
-    \ endif
+" Clear search highlight
+nnoremap <leader><space> :noh<cr>
 
-  augroup END
+" Persistent undo and auto save
+au FocusLost * :wa
+set undofile
 
-else
+" Exotic but relevant! (try it)
+set relativenumber
 
-  set autoindent		" always set autoindenting on
+nnoremap <leader>w <C-w>v<C-w>l
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
 
-endif " has("autocmd")
+" Clipboard copy in visual:
+vnoremap <C-c> "*y
 
-set ts=4
-set sw=4
-set sts=4
+" Clipboard paste in insert mode, preserving indent:
+inoremap <C-v> <C-r><C-p>*
 
-syntax on
-set nu
+call plug#begin()
+Plug 'junegunn/goyo.vim' " Focus mode ala iA Writer
+Plug 'vim-airline/vim-airline' " status line
+Plug 'vim-airline/vim-airline-themes' 
+Plug 'markonm/traces.vim' " Highlight regex matches
+Plug 'tpope/vim-surround'
+Plug 'tomasiser/vim-code-dark'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'preservim/nerdtree'
+Plug 'preservim/nerdcommenter'
+call plug#end()
+
+colorscheme codedark
+
+" Configuring NERD Tree
+"nnoremap <leader>n :NERDTreeFocus<CR>
+nnoremap <leader>n :NERDTree<CR>
+nnoremap <C-n> :NERDTreeToggle<CR>
+nnoremap <leader>l :NERDTreeFind<CR>
+
+nnoremap <leader>g :Goyo<CR>
+
 set mouse=a
-set expandtab 
-
-"auto BufEnter * let &titlestring = hostname() . "/" . expand("%:p")
-"set title titlestring=%<%F%=%l/%L-%P titlelen=70
-set title
-
-set ruler
-set backspace=start,indent,eol
-
-set hlsearch
-
-" fix til að VIM birti titilinn undir screen (notar sömu gildi og fyrir xterm)
-" Ath.: nota C-V x  til að fá escape staf fyrir x
-if &term == 'screen'
-  set t_ts=]2;
-  set t_fs=
-endif
-
-"color darkblue
-
-"function! PoundComment()
-"  map - 0i# 
-"  map _ :s/^\s*# \=//g<Enter>
-"  set comments=:#
-"endfunction
-"autocmd FileType perl call PoundComment()
-"autocmd BufEnter * doautocmd FileType
-
-" Slökkva/kveikja á mús og ýmsu til að auðvelda afritun í xterm 
-function! ToggleMouse()
-  if &mouse == 'a' 
-    set paste
-    set nonu
-    set mouse=
-  else
-    set mouse=a
-    set nu
-    set nopaste
-  endif
-endfunction
-
-map <F12> :set indentexpr= ft=mason<Enter>
-map <F11> :nohlsearch<Enter>
-map <F10> :call ToggleMouse()<Enter>
-map <F9> 100
-
-map _a :set indentexpr= ft=mason<Enter>
-map __ :nohlsearch<Enter>
-map _s :call ToggleMouse()<Enter>
-
-
-
-set ignorecase
-
-source ~/.vim/line_cmt.vim
-
-"au Filetype html,xml,xsl source ~/vimfile/closetag.vim
-
-set nohidden

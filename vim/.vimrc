@@ -16,8 +16,8 @@ vnoremap / /\v
 nnoremap <leader><space> :noh<cr>
 
 " Persistent undo and auto save
-au FocusLost * :wa
-set undofile
+"au FocusLost * :wa
+"set undofile
 
 " Exotic but relevant! (try it)
 set relativenumber
